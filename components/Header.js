@@ -8,5 +8,3 @@ export default function Header({name}) {
     </View>
   )
 }
-
-const styles = StyleSheet.create({})
