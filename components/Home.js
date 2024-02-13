@@ -11,20 +11,9 @@ export default function Home({navigation}) {
   const [goals, setGoals] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
   function receiveInput(data) {
-    // console.log("recieve input ", data);
-    // setText(data);
-    // 1. define a new object {text:.., id:..} and store data in object's text
-    // 2. use Math.random() to set the object's id
     const newGoal = { text: data, id: Math.random() };
-    // const newArray = [...goals, newGoal];
-    // setGoals (newArray)
-    // use updater function whenever we are updating state variables based on the current value
     setGoals((currentGoals) => [...currentGoals, newGoal]);
-
-    // 3. how do I add this object to goals array?
     setIsModalVisible(false);
-    // use this to update the text showing in the
-    // Text component
   }
   function dismissModal() {
     setIsModalVisible(false);
@@ -39,8 +28,9 @@ export default function Home({navigation}) {
     });
   }
 
-  const goalPressHandler = () => {
-    navigation.navigate('GoalDetails')
+  const goalPressHandler = (goalItem) => {
+    console.log(goalItem);
+    navigation.navigate('Details', {data: goalItem})
   }
   return (
     <SafeAreaView style={styles.container}>
