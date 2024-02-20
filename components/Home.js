@@ -5,12 +5,14 @@ import { useState } from "react";
 import Input from "./Input";
 import GoalItem from "./GoalItem";
 import PressableButton from "./PressableButton";
+import { database } from "../firebase-files/firebaseSetup";
 
 export default function Home({navigation}) {
   const appName = "My awesome app";
   // const [text, setText] = useState("");
   const [goals, setGoals] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  console.log(database);
   function receiveInput(data) {
     const newGoal = { text: data, id: Math.random() };
     setGoals((currentGoals) => [...currentGoals, newGoal]);
