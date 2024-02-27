@@ -4,7 +4,7 @@ import React from 'react'
 export default function PressableButton({commonStyle, onPressFunc, children}) {
   return (
     <Pressable 
-        style={({pressed})=> [styles.defaultStyle,commonStyle, pressed && styles.pressed]} 
+        style={({pressed})=> [styles.defaultStyle, commonStyle, pressed && styles.pressed]} 
         onPress={onPressFunc}>
         {children}
     </Pressable>
