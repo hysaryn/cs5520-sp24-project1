@@ -10,6 +10,7 @@ import {writeToDB, deleteFromDB} from "../firebase-files/firebaseHelper";
 import { collection, onSnapshot } from "firebase/firestore";
 
 export default function Home({navigation}) {
+  
   useEffect(() => {
     //set up a listener to get realtime data from firestore - only after the first render
     const unsubscribe = onSnapshot(collection(database, "goals"), (querySnapshot) => {
@@ -18,9 +19,11 @@ export default function Home({navigation}) {
         //store the data in a new array
         newArray.push({...doc.data(), id: doc.id});
       });
-      console.log(newArray);
       setGoals(newArray);
-    })
+    });
+    return () => {
+      unsubscribe();
+    };
     })
       //set the data with the new array
     
@@ -32,7 +35,7 @@ export default function Home({navigation}) {
     const newGoal = { text: data, id: Math.random() };
     setGoals((currentGoals) => [...currentGoals, newGoal]);
     setIsModalVisible(false);
-    writeToDB(newGoal);
+    writeToDB(newGoal, "goals");
   }
   function dismissModal() {
     setIsModalVisible(false);
