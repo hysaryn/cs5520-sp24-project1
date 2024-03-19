@@ -50,7 +50,7 @@ export default function Signup({ navigation }) {
       <Text style={styles.label}>Password</Text>
       <TextInput
         style={styles.input}
-        secureTextEntry={true}
+        //secureTextEntry={true}
         placeholder="Password"
         value={password}
         onChangeText={(changedText) => {
