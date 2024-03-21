@@ -1,25 +1,30 @@
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, TextInput, View, Text, Button, SafeAreaView, ScrollView, FlatList,} from "react-native";
+import { StyleSheet, TextInput, View, Text, Button, SafeAreaView, ScrollView, FlatList, Image,} from "react-native";
 import Header from "./Header";
 import { useEffect, useState } from "react";
 import Input from "./Input";
 import GoalItem from "./GoalItem";
 import PressableButton from "./PressableButton";
-import { database } from "../firebase-files/firebaseSetup";
+import { database, auth } from "../firebase-files/firebaseSetup";
 import {writeToDB, deleteFromDB} from "../firebase-files/firebaseHelper";
-import { collection, onSnapshot } from "firebase/firestore";
+import { collection, onSnapshot, query, where } from "firebase/firestore";
+import ImageManager from "./ImageManager";
 
 export default function Home({navigation}) {
   
   useEffect(() => {
     //set up a listener to get realtime data from firestore - only after the first render
-    const unsubscribe = onSnapshot(collection(database, "goals"), (querySnapshot) => {
+    const q = query(collection(database, "goals"), where ("owner", "==", auth.currentUser.uid));
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
       let newArray = [];
       querySnapshot.forEach((doc) => {
         //store the data in a new array
         newArray.push({...doc.data(), id: doc.id});
       });
       setGoals(newArray);
+    },
+    (error) => {
+      console.log(error);
     });
     return () => {
       unsubscribe();
@@ -31,11 +36,17 @@ export default function Home({navigation}) {
   // const [text, setText] = useState("");
   const [goals, setGoals] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [imageUri, setImageUri] = useState(null);
   function receiveInput(data) {
     const newGoal = { text: data, id: Math.random() };
     setGoals((currentGoals) => [...currentGoals, newGoal]);
     setIsModalVisible(false);
     writeToDB(newGoal, "goals");
+  }
+
+  function receiveImage(imageUri) {
+    console.log(imageUri);
+    setImageUri(imageUri);
   }
   function dismissModal() {
     setIsModalVisible(false);
@@ -65,6 +76,9 @@ export default function Home({navigation}) {
         <PressableButton commonStyle={styles.addButton} onPressFunc={()=> setIsModalVisible(true)}>
           <Text style={{fontSize:20, color: 'purple'}}>Add a Goal</Text>
         </PressableButton>
+        <ImageManager receiveImageUri={receiveImage} />
+        <Image 
+          imageUri = {imageUri} />
         <Input
           inputHandler={receiveInput}
           modalVisible={isModalVisible}

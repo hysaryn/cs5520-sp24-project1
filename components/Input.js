@@ -8,6 +8,7 @@ import {
   View,
 } from "react-native";
 import React, { useState } from "react";
+import ImageManager from "./ImageManager";
 
 export default function Input({ inputHandler, modalVisible, dismissModal }) {
   const [text, setText] = useState("");
@@ -45,6 +46,7 @@ export default function Input({ inputHandler, modalVisible, dismissModal }) {
             value={text}
             onChangeText={changeTextHandler}
           />
+          <ImageManager />
           <View style={styles.buttonsContainer}>
             <View style={styles.buttonView}>
               <Button title="Cancel" onPress={cancelHandler} />
