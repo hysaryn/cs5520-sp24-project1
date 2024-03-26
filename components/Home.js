@@ -36,18 +36,13 @@ export default function Home({navigation}) {
   // const [text, setText] = useState("");
   const [goals, setGoals] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [imageUri, setImageUri] = useState(null);
-  function receiveInput(data) {
+  function receiveInput(data, imageUri) {
     const newGoal = { text: data, id: Math.random() };
     setGoals((currentGoals) => [...currentGoals, newGoal]);
     setIsModalVisible(false);
     writeToDB(newGoal, "goals");
   }
-
-  function receiveImage(imageUri) {
-    console.log(imageUri);
-    setImageUri(imageUri);
-  }
+  
   function dismissModal() {
     setIsModalVisible(false);
   }
