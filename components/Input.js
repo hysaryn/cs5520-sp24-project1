@@ -11,7 +11,7 @@ import React, { useState } from "react";
 import ImageManager from "./ImageManager";
 export default function Input({ inputHandler, modalVisible, dismissModal }) {
   const [text, setText] = useState("");
-  const [imageUri, setImageUri] = useState('');
+  const [imageUri, setImageUri] = useState("");
   // callback handler
   function changeTextHandler(changedText) {
     // console.log("user is typing ", changedText);
@@ -20,7 +20,9 @@ export default function Input({ inputHandler, modalVisible, dismissModal }) {
   }
 
   function confirmHandler() {
-    inputHandler(text);
+    console.log(text);
+    console.log(imageUri);
+    inputHandler(text, imageUri);
     setText("");
   }
   function cancelHandler() {

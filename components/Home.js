@@ -5,7 +5,8 @@ import { useEffect, useState } from "react";
 import Input from "./Input";
 import GoalItem from "./GoalItem";
 import PressableButton from "./PressableButton";
-import { database, auth } from "../firebase-files/firebaseSetup";
+import { database, auth, storage } from "../firebase-files/firebaseSetup";
+import { ref, uploadBytes } from "firebase/storage";
 import {writeToDB, deleteFromDB} from "../firebase-files/firebaseHelper";
 import { collection, onSnapshot, query, where } from "firebase/firestore";
 import ImageManager from "./ImageManager";
@@ -36,24 +37,47 @@ export default function Home({navigation}) {
   // const [text, setText] = useState("");
   const [goals, setGoals] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
-  function receiveInput(data, imageUri) {
-    const newGoal = { text: data, id: Math.random() };
-    setGoals((currentGoals) => [...currentGoals, newGoal]);
+  
+  async function getImageData(uri) {
+    try {
+      const response = await fetch(uri);
+      const imageBlob = await response.blob();
+      const imageName = uri.substring(uri.lastIndexOf('/') + 1);
+      const imageRef = ref(storage, `images/${imageName}`)
+      const uploadResult = await uploadBytes(imageRef, imageBlob);
+      return uploadResult.metadata.fullPath;
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  async function receiveInput(data, imageUri) {
+    console.log("We are in home", imageUri);
+    let uploadImageUri = "";
+
+    try {
+      if (imageUri) {
+        console.log("image uri received", imageUri);
+        uploadImageUri = await getImageData(imageUri);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+
+    let newGoal = {text: data};
+    if (uploadImageUri) {
+      newGoal = { ...newGoal, imageUri: uploadImageUri };
+    }
     setIsModalVisible(false);
     writeToDB(newGoal, "goals");
   }
-  
+
   function dismissModal() {
     setIsModalVisible(false);
   }
+
   function goalDeleteHandler(deletedId) {
     console.log("delete pressed", deletedId);
-    //we need to know which item was clicked? they have unique id
-    //use the id to filter the array
-    // setGoals((currentGoals) => {return currentGoals.filter((goal) => {
-    //   return goal.id !== deletedId;
-    // });
-    // });
     deleteFromDB(deletedId);
   }
 
@@ -61,6 +85,7 @@ export default function Home({navigation}) {
     console.log(goalItem);
     navigation.navigate('Details', {data: goalItem})
   }
+  
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.topView}>
@@ -71,9 +96,6 @@ export default function Home({navigation}) {
         <PressableButton commonStyle={styles.addButton} onPressFunc={()=> setIsModalVisible(true)}>
           <Text style={{fontSize:20, color: 'purple'}}>Add a Goal</Text>
         </PressableButton>
-        <ImageManager receiveImageUri={receiveImage} />
-        <Image 
-          imageUri = {imageUri} />
         <Input
           inputHandler={receiveInput}
           modalVisible={isModalVisible}

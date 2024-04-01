@@ -4,7 +4,7 @@ import * as ImagePicker from 'expo-image-picker';
 
 export default function ImageManager({receiveImageUri}) {
     const [status, requestPermission] = ImagePicker.useCameraPermissions();
-    const [imageUri, setImageUri] = useState(null);
+    const [imageUri, setImageUri] = useState("");
     async function verifyPermission () { 
         if (status !== 'granted') {
             try {
@@ -28,8 +28,8 @@ export default function ImageManager({receiveImageUri}) {
                 allowsEditing: true,
               });
             
+            receiveImageUri(results.assets[0].uri);
             setImageUri(results.assets[0].uri);
-            receiveImageUri(imageUri);
         } catch (err) {
             console.error(err);
         }
