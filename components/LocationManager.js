@@ -1,13 +1,14 @@
 import { Alert, Button, Dimensions, Image, StyleSheet, Text, View } from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import * as Location from 'expo-location';
 import { mapsApiKey } from "@env";
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 
 export default function LocationManager() {
   const [location, setLocation] = useState(null);
   const [status, requestPermission] = Location.useForegroundPermissions();
   const navigation = useNavigation();
+  const route = useRoute();
 
   async function verifyPermission() {
       if (status.granted) {
@@ -40,6 +41,14 @@ export default function LocationManager() {
       }
   }
 
+  chooseLocationHandler = () => {
+    if (location) {
+      navigation.navigate('Map', { location: location});
+    } else {
+      navigation.navigate('Map');
+    }
+  }
+
   return (
     <View>
       <Button title="Locate me" onPress={locateUserHandler} />
@@ -51,7 +60,7 @@ export default function LocationManager() {
         }}/>
           
       )}
-      <Button title="Go to Map" onPress={() => navigation.navigate('Map')} />
+      <Button title="Go to Map" onPress={chooseLocationHandler} />
     </View>
   )
 }

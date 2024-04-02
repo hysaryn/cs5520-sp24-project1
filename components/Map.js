@@ -1,20 +1,26 @@
 import { Button, StyleSheet, Text, View } from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import MapView, {Marker} from 'react-native-maps';
 
-export default function Map({navigation}) {
+export default function Map({navigation, route}) {
     const [location, setLocation] = useState(null);
 
+    useEffect(() => {   
+        if (route.params.location) {
+            setLocation(route.params.location)
+        }
+    })
+
     const confirmLocationHandler = () => {
-        console.log(location);  
+         navigation.navigate('Profile', {location: location})
     }
 
     return (
         <MapView style={styles.map}
             initialRegion={
                 {
-                    latitude: 37.78825,
-                    longitude: -122.4324,
+                    latitude: route.params.location? route.params.location.latitude: 37.78825,
+                    longitude: route.params.location? route.params.location.longitude: -122.4324,
                     latitudeDelta: 0.0922,
                     longitudeDelta: 0.0421,
                 }}

@@ -3,7 +3,7 @@ import React from "react";
 import { auth } from "../firebase-files/firebaseSetup";
 import LocationManager from "./LocationManager";
 
-export default function Profile() {
+export default function Profile({route}) {
   return (
     <View>
       <Text>{auth.currentUser.uid}</Text>
