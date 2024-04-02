@@ -10,9 +10,7 @@ export default function GoalUsers({id}) {
         async function fetchUsers() {
             try {
                 const usersFromDB = await getAllDocs(`goals/${id}/users`);
-                console.log("usersFromDB:   " + usersFromDB.length);
-                if (usersFromDB.length) {
-                    console.log("if block    "  + usersFromDB.length);
+                if (usersFromDB) {
                     setUsers(usersFromDB);
                     return;
                 }
