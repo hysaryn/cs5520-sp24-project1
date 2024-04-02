@@ -20,8 +20,6 @@ export default function Input({ inputHandler, modalVisible, dismissModal }) {
   }
 
   function confirmHandler() {
-    console.log(text);
-    console.log(imageUri);
     inputHandler(text, imageUri);
     setText("");
   }

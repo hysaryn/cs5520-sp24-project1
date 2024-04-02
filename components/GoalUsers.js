@@ -19,7 +19,6 @@ export default function GoalUsers({id}) {
                     throw new Error('data not found');
                 }
                 const data = await response.json();
-                console.log(data);
                 // store the data in an array and set it to state
                 setUsers(data);
                 //write a for loop and write the data into user subcollection
