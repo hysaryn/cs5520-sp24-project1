@@ -2,10 +2,12 @@ import { Alert, Button, Dimensions, Image, StyleSheet, Text, View } from 'react-
 import React, { useState } from 'react'
 import * as Location from 'expo-location';
 import { mapsApiKey } from "@env";
+import { useNavigation } from '@react-navigation/native';
 
 export default function LocationManager() {
   const [location, setLocation] = useState(null);
   const [status, requestPermission] = Location.useForegroundPermissions();
+  const navigation = useNavigation();
 
   async function verifyPermission() {
       if (status.granted) {
@@ -49,6 +51,7 @@ export default function LocationManager() {
         }}/>
           
       )}
+      <Button title="Go to Map" onPress={() => navigation.navigate('Map')} />
     </View>
   )
 }
