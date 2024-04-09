@@ -3,12 +3,31 @@ import React, { useEffect, useState } from 'react'
 import * as Location from 'expo-location';
 import { mapsApiKey } from "@env";
 import { useNavigation, useRoute } from '@react-navigation/native';
+import { getDocFromDB, setDocToDB } from '../firebase-files/firebaseHelper';
+import { auth } from '../firebase-files/firebaseSetup';
+import { getDoc } from 'firebase/firestore';
 
 export default function LocationManager() {
   const [location, setLocation] = useState(null);
   const [status, requestPermission] = Location.useForegroundPermissions();
   const navigation = useNavigation();
   const route = useRoute();
+
+  useEffect(() => {
+    if (route.params?.location) {
+      setLocation(route.params.location);
+    }
+  }, [route.params?.location])
+
+  useEffect(() => {
+    async function getLocation() {
+      const doc = await getDocFromDB('users', auth.currentUser.uid);
+      if (doc.exists()) {
+        setLocation(doc.data().location);
+      }
+    }
+  }, []);
+
 
   async function verifyPermission() {
       if (status.granted) {
@@ -49,6 +68,10 @@ export default function LocationManager() {
     }
   }
 
+  saveLocationHandler = () => {
+    setDocToDB({location},'users');
+  }
+
   return (
     <View>
       <Button title="Locate me" onPress={locateUserHandler} />
@@ -61,6 +84,7 @@ export default function LocationManager() {
           
       )}
       <Button title="Go to Map" onPress={chooseLocationHandler} />
+      <Button title="Save Location" onPress={saveLocationHandler} />
     </View>
   )
 }

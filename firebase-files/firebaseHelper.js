@@ -1,4 +1,4 @@
-import {collection, addDoc, doc, deleteDoc, getDocs} from "firebase/firestore";
+import {collection, addDoc, doc, deleteDoc, getDocs, setDoc} from "firebase/firestore";
 import {database} from "./firebaseSetup";
 import {auth} from "./firebaseSetup";
 
@@ -33,4 +33,19 @@ export async function getAllDocs (path) {
         newArray.push({...doc.data(), id: doc.id});
     });
     return newArray;
+}
+
+export async function setDocToDB(data, collectionName) {
+    try {
+        await setDoc(doc(database, collectionName, auth.currentUser.uid), data, {merge: true});
+    } catch (err) {
+        console.error(err);
+    }
+}
+
+export async function getDocFromDB(collectionName, id) {
+    const docSnap = await getDoc(doc(database, collectionName, id));
+    if (docSnap.exists()) {
+        return docSnap.data();
+    }
 }
