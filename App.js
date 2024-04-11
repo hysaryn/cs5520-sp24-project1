@@ -13,9 +13,32 @@ import PressableButton from "./components/PressableButton";
 import { Ionicons, AntDesign } from "@expo/vector-icons";
 import Profile from "./components/Profile";
 import Map from "./components/Map";
+import * as Notifications from "expo-notifications";
+import * as Linking from "expo-linking";
 
+Notifications.setNotificationHandler({
+  handleNotification: async () => {
+    return {
+      shouldShowAlert: true,  
+      shouldPlaySound: true,
+      shouldSetBadge: false,
+    };
+  },
+});
 const Stack = createNativeStackNavigator();
 export default function App() {
+  useEffect(() => {
+    const subscription = Notifications.addNotificationResponseReceivedListener(
+      (notificationResponse) => {
+        let data = notificationResponse.notification.request.content.data.url;
+        if (data) {
+          Linking.openURL(data);
+        }
+      }
+    );
+    return () => subscription.remove();
+  }, []);
+
   const [userLoggedIn, setUserLoggedIn] = useState(false);
 
   useEffect(() => {
