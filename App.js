@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from "react-native";
+import { Platform, StyleSheet, Text, View } from "react-native";
 import React, { useEffect, useState } from "react";
 import Home from "./components/Home";
 
@@ -15,6 +15,7 @@ import Profile from "./components/Profile";
 import Map from "./components/Map";
 import * as Notifications from "expo-notifications";
 import * as Linking from "expo-linking";
+import { verifyPermission } from "./components/NotificationManager";
 
 Notifications.setNotificationHandler({
   handleNotification: async () => {
@@ -26,7 +27,20 @@ Notifications.setNotificationHandler({
   },
 });
 const Stack = createNativeStackNavigator();
+
 export default function App() {
+
+  useEffect(() => {
+    const sunscription = Notifications.addNotificationReceivedListener(
+      (notification) => {
+        console.log("received listener", notification);
+      }
+    );
+    return () => {
+      sunscription.remove();
+    };
+  }, []);
+
   useEffect(() => {
     const subscription = Notifications.addNotificationResponseReceivedListener(
       (notificationResponse) => {
@@ -37,6 +51,32 @@ export default function App() {
       }
     );
     return () => subscription.remove();
+  }, []);
+
+  useEffect(() => {
+    async function getPushToken () {
+      try {
+        const havePermission = await verifyPermission();
+        if (!havePermission) {
+          Alert.alert("Permission required", "You need to grant notification permissions to use the app")
+          return;
+        }
+        if (Platform.OS === "android") {
+          await Notifications.setNotificationChannelAsync("default", {
+            name: "default",
+            importance: Notifications.AndroidImportance.MAX,
+          });
+        } 
+        const pushToken = await Notifications.getExpoPushTokenAsync({
+          projectId: "eac48a1b-445d-4a09-a64c-b7fa81094603",
+        }); 
+        console.log(pushToken.data);
+
+      } catch (err) {
+        console.log(err);
+      }
+    }
+    getPushToken();
   }, []);
 
   const [userLoggedIn, setUserLoggedIn] = useState(false);
@@ -50,6 +90,7 @@ export default function App() {
       }
     });
   }, []);
+
   const AuthStack = (
     <>
       <Stack.Screen name="Signup" component={Signup} />

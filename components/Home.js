@@ -12,6 +12,21 @@ import { collection, onSnapshot, query, where } from "firebase/firestore";
 import ImageManager from "./ImageManager";
 
 export default function Home({navigation}) {
+
+  function sendPushNotif() {
+    fetch("https://exp.host/--/api/v2/push/send", {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify({
+        // in a real life scenario, the push token will be read from users collection in firestore
+        to: "ExponentPushToken[youSMxKtL3iDPw0sSbAxmH]",
+        title: "Push Notification",
+        body: "This is a push notification",
+      }),
+    });
+  }
   
   useEffect(() => {
     //set up a listener to get realtime data from firestore - only after the first render
@@ -93,9 +108,11 @@ export default function Home({navigation}) {
 
         <Header name={appName} version={2} />
         {/* <Button title="Add a goal" onPress={() => setIsModalVisible(true)} /> */}
+        
         <PressableButton commonStyle={styles.addButton} onPressFunc={()=> setIsModalVisible(true)}>
           <Text style={{fontSize:20, color: 'purple'}}>Add a Goal</Text>
         </PressableButton>
+        <Button title="test push notification" onPress={sendPushNotif} />
         <Input
           inputHandler={receiveInput}
           modalVisible={isModalVisible}

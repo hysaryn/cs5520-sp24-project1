@@ -24,9 +24,7 @@ export default function ImageManager({receiveImageUri}) {
                 Alert.alert('Permission required', 'You need to grant camera permission to use this feature');
                 return;
             }
-            const results = await ImagePicker.launchCameraAsync({
-                allowsEditing: true,
-              });
+            const results = await ImagePicker.launchCameraAsync();
             
             receiveImageUri(results.assets[0].uri);
             setImageUri(results.assets[0].uri);

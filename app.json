@@ -9,7 +9,8 @@
     "plugins": [
       [
         "expo-image-picker",
-        { "photoPermission": "The app accesses your photo to show with your friends.",
+        {
+          "photoPermission": "The app accesses your photo to show with your friends.",
           "cameraPermission": "The app needs access to your camera to take pictures and videos"
         }
       ]
@@ -23,16 +24,33 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "buildNumber": "1.0.0",
+      "bundleIdentifier": "com.yolandahe.myapp"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "versionCode": 1,
+      "permission": [
+        "andriod.permission.CAMERA",
+        "android.permission.accessFineLocation",
+        "android.permission.accessCoarseLocation"
+      ],
+      "permissions": [
+        "android.permission.RECORD_AUDIO"
+      ],
+      "package": "com.yolandahe.myapp"
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "eac48a1b-445d-4a09-a64c-b7fa81094603"
+      }
     }
   }
 }

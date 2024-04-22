@@ -2,28 +2,22 @@ import { Button, StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import * as Notifications from 'expo-notifications'
 
+export async function verifyPermission() {
+    try {
+      const status = await Notifications.getPermissionsAsync();
+      if (status.granted) {
+        return true;
+      }
+  
+      const permissionResponse = await Notifications.requestPermissionsAsync();
+      return permissionResponse.granted;
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
 export default function NotificationManager() {
     // const [status, requestPermission] = Notifications.usePermissions();
-
-    async function verifyPermission() {
-        let permission = await Notifications.getPermissionsAsync();
-        if (permission.status !== 'granted') {
-            permission = await Notifications.requestPermissionsAsync();
-        }
-        return permission.granted;
-
-        // if (status.granted) {
-        //     return true;
-        // }
-        // if (status !== 'granted') {
-        //     try {
-        //         const permissionResponse = await requestPermission();
-        //         return permissionResponse.granted;
-        //     } catch (err) {
-        //         console.error(err);
-        //     }
-        // }
-    }
 
     async function localNotification(){
         try {
